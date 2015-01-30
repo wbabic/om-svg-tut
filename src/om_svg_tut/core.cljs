@@ -110,7 +110,7 @@
   [o]
   (let [class-name (str "object object-" o)]
     (dom/svg #js {:className class-name}
-             (dom/circle #js{:cx 30 :cy 30 :r 20})
+             (dom/circle #js{:cx 30 :cy 30 :r 25})
              (dom/text #js{:x 20 :y 40}
                        (str o)))))
 
