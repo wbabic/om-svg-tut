@@ -151,7 +151,6 @@
     om/IRender
     (render [_]
       (dom/div #js {:className "main"}
-               (dom/h1 nil "Sudoku")
                (om/build objects (:value app))
                (om/build board app)))))
 
