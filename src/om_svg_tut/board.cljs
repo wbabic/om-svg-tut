@@ -41,20 +41,7 @@
 (defn empty-board []
   (vec (repeat 9 empty-row)))
 
-;; TODO: board protocol - Walter
-
-;; row operations
-(defn full-row
-  "returns a full ordered row"
-  []
-  (vec (range 1 10)))
-
-(defn shift-row
-  "move first to last, second to first ..."
-  [row]
-  (vec (take 9 (drop 1 (cycle row)))))
-
-;; a position is a vector if int [x y]
+;; a position is a vector of int
 ;; where x,y in [0..9]
 ;; [0 0] through [8 8]
 (defn valid-position?

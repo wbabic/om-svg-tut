@@ -78,15 +78,43 @@
                           :width box-length
                           :height box-length}))))
 
-(defn current-square
-  "highlight given square"
-  [[row-num col-num]]
-  (let [x (* col-num square-length)
-        y (* row-num square-length)]
-    (dom/g #js {:className "current-square"}
-           (dom/rect #js {:x x :y y
-                          :width square-length
-                          :height square-length}))))
+(defn value-at-pos
+  [pos value]
+  (let [[r c] pos
+        _ (println "r: " (str r) " c: " (str c))
+        _ (println "val: " value)
+        x-pos (* r square-length)
+        y-pos (* c square-length)
+        cx (+ 40 x-pos)
+        cy (+ 40 y-pos)
+        x (+ x-pos 30)
+        y (+ y-pos 50)
+        r 25]
+    (dom/g #js{:className (str "object-" value)}
+           (dom/circle #js{:cx cx :cy cy :r r})
+           (dom/text #js{:x x :y y} (str value)))))
+
+(defn row-of-values
+  "given a row and a row number, return a sequence of svg representations."
+  [row row-num]
+  (let [_ (println "row-num: " row-num)]
+    (apply dom/g #js {:className "row-values"}
+           (map
+            (fn [col-num]
+              (println "col-num: " col-num)
+              (value-at-pos [row-num col-num] (row col-num)))
+            (range 9)))))
+
+(defn board-values
+  "draw values of given board
+one row at a time"
+  [board]
+  (apply dom/g #js {:className "board-values"}
+         (map
+          (fn [row-num]
+            (let [row-vals (board row-num)]
+              (row-of-values row-vals row-num)))
+          (range 9))))
 
 (defn board
   "render svg board"
@@ -101,9 +129,9 @@
                  (square-lines)
                  (current-row row)
                  (current-col col)
-                 ;;(current-square [row col])
                  (current-box start-pos)
-                 (box-lines))))))
+                 (box-lines)
+                 (board-values (:board app)))))))
 
 (defn object
   "render representation of given object o"
