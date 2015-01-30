@@ -108,9 +108,11 @@
 (defn object
   "render representation of given object o"
   [o]
-  (let [class-name (str "object-" o)]
-    (dom/div #js {:className class-name}
-             (str o))))
+  (let [class-name (str "object object-" o)]
+    (dom/svg #js {:className class-name}
+             (dom/circle #js{:cx 30 :cy 30 :r 20})
+             (dom/text #js{:x 20 :y 40}
+                       (str o)))))
 
 (defn objects
   "render a row of objects"
@@ -118,7 +120,7 @@
   (reify
     om/IRender
     (render [_]
-      (dom/div #js {:clasName "objects"}
+      (dom/div #js {:className "objects"}
                (apply dom/div #js {:className "object-list"}
                       (map
                        (fn [o] (object o))
