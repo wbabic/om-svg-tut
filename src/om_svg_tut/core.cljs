@@ -10,11 +10,11 @@
 
 (enable-console-print!)
 
-(def app-state (atom {:row 0
+(def game-state (atom {:row 0
                       :col 0
                       :value 0
                       :board board/sudoku-board}))
-
+;; global constants
 (def square-length 77)
 (def number-of-squares 9)
 (def squares-per-box 3)
@@ -81,29 +81,27 @@
 (defn value-at-pos
   [pos value]
   (let [[r c] pos
-        _ (println "r: " (str r) " c: " (str c))
-        _ (println "val: " value)
         x-pos (* r square-length)
         y-pos (* c square-length)
-        cx (+ 40 x-pos)
-        cy (+ 40 y-pos)
-        x (+ x-pos 30)
-        y (+ y-pos 50)
-        r 25]
-    (dom/g #js{:className (str "object-" value)}
-           (dom/circle #js{:cx cx :cy cy :r r})
-           (dom/text #js{:x x :y y} (str value)))))
+        cx (+ 38 x-pos)
+        cy (+ 39 y-pos)
+        x (+ x-pos 26)
+        y (+ y-pos 52)
+        r 30]
+    (when (not (= 0 value))
+      (dom/g #js{:className (str "object-" value)}
+             (dom/circle #js{:cx cx :cy cy :r r})
+             (dom/text #js{:x x :y y}
+                       (str value))))))
 
 (defn row-of-values
   "given a row and a row number, return a sequence of svg representations."
   [row row-num]
-  (let [_ (println "row-num: " row-num)]
-    (apply dom/g #js {:className "row-values"}
-           (map
-            (fn [col-num]
-              (println "col-num: " col-num)
-              (value-at-pos [row-num col-num] (row col-num)))
-            (range 9)))))
+  (apply dom/g #js {:className "row-values"}
+         (map
+          (fn [col-num]
+            (value-at-pos [row-num col-num] (row col-num)))
+          (range 9))))
 
 (defn board-values
   "draw values of given board
@@ -126,10 +124,10 @@ one row at a time"
             col (:col app)
             start-pos (board/pos->start-pos [col row])]
         (dom/svg #js{:width 693 :height 693}
-                 (square-lines)
                  (current-row row)
                  (current-col col)
                  (current-box start-pos)
+                 (square-lines)
                  (box-lines)
                  (board-values (:board app)))))))
 
@@ -138,7 +136,7 @@ one row at a time"
   [o]
   (let [class-name (str "object object-" o)]
     (dom/svg #js {:className class-name}
-             (dom/circle #js{:cx 30 :cy 30 :r 25})
+             (dom/circle #js{:cx 30 :cy 30 :r 30})
              (dom/text #js{:x 20 :y 40}
                        (str o)))))
 
@@ -184,6 +182,6 @@ one row at a time"
 
 (om/root
  game
-  app-state
+  game-state
   {:target (. js/document (getElementById "app"))
    :shared {:keys-chan (events/keys-chan)}})
