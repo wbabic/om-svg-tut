@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
+            [cljs.core.match :refer-macros [match]]
             [om-svg-tut.events :as events]
             [om-svg-tut.board :as board]
             [clojure.browser.repl :as repl]))
@@ -10,10 +11,12 @@
 
 (enable-console-print!)
 
-(def game-state (atom {:row 0
-                      :col 0
-                      :value 0
-                      :board board/sudoku-board}))
+(def game-state (atom
+                 {:row 0
+                  :col 0
+                  :value 0
+                  :board board/sudoku-board}))
+
 ;; global constants
 (def square-length 77)
 (def number-of-squares 9)
@@ -158,6 +161,24 @@ one row at a time"
    app key
    (fn [val] (mod (op val) number-of-squares))))
 
+(defn move-in-direction
+  [app direction]
+  (condp = direction
+    :right (update-pos app :col inc)
+    :left  (update-pos app :col dec)
+    :down  (update-pos app :row inc)
+    :up    (update-pos app :row dec)))
+
+(defn update-value
+  "update current position to given value"
+  [app value]
+  (let [app-values (deref app)
+        row (:row app-values)
+        col (:col app-values)
+        board (:board app-values)
+        cur-val (board/value board [col row])]
+    (om/update! app [:board col row] value)))
+
 (defn game
   "start a new sudoku game"
   [app owner]
@@ -167,12 +188,11 @@ one row at a time"
       (let [key-chan (om/get-shared owner :keys-chan)]
         (go
           (loop []
-            (let [key (<! key-chan)]
-              (condp = key
-                :right (update-pos app :col inc)
-                :left  (update-pos app :col dec)
-                :down  (update-pos app :row inc)
-                :up    (update-pos app :row dec))
+            (let [event (<! key-chan)
+                  _ (println (str event))]
+              (match event
+                     [:move   direction] (move-in-direction app direction)
+                     [:value  value]     (update-value app value))
               (recur))))))
     om/IRender
     (render [_]
