@@ -179,6 +179,7 @@ one row at a time"
         cur-val (board/value board [col row])]
     (om/update! app [:board col row] value)))
 
+
 (defn game
   "start a new sudoku game"
   [app owner]
@@ -188,7 +189,8 @@ one row at a time"
       (let [key-chan (om/get-shared owner :keys-chan)]
         (go
           (loop []
-            (let [event (<! key-chan)]
+            (let [event (<! key-chan)
+                  _ (println (str event))]
               (match event
                      [:move   direction] (move-in-direction app direction)
                      [:value  value]     (update-value app value))

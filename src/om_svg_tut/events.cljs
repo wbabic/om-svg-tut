@@ -34,24 +34,16 @@
      (events/listen el (event-type event-map)
                     (fn [e] (put! c e)))
      c))
-
 (defn keys-chan []
   (events->chan js/window :key-down
                 (chan 1 (comp (map #(.-keyCode %))
                               (filter #{37 38 39 40
-<<<<<<< HEAD
                                         48 49 50 51 52 53 54 55 56 57})
-=======
-                                        49 50 51 52 53 54 55 56 57})
->>>>>>> 986f68c2a8ea6e7b003bf08258a7ac8d2a04385a
                               (map {37 [:move :left]
                                     38 [:move :up]
                                     39 [:move :right]
                                     40 [:move :down]
-<<<<<<< HEAD
                                     48 [:value 0]
-=======
->>>>>>> 986f68c2a8ea6e7b003bf08258a7ac8d2a04385a
                                     49 [:value 1]
                                     50 [:value 2]
                                     51 [:value 3]
