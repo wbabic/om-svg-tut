@@ -3,10 +3,12 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2727"]
+                 [org.clojure/tools.reader "0.8.12"]
+                 [org.clojure/tools.analyzer.jvm "0.6.5"]
+                 [org.clojure/clojurescript "0.0-2760"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.clojure/core.match "0.3.0-alpha4"]
-                 [org.omcljs/om "0.8.7"]]
+                 [org.omcljs/om "0.8.8"]]
 
   :plugins [[lein-cljsbuild "1.0.4"]]
 
