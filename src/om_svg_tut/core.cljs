@@ -189,8 +189,7 @@ one row at a time"
       (let [key-chan (om/get-shared owner :keys-chan)]
         (go
           (loop []
-            (let [event (<! key-chan)
-                  _ (println (str event))]
+            (let [event (<! key-chan)]
               (match event
                      [:move   direction] (move-in-direction app direction)
                      [:value  value]     (update-value app value))
