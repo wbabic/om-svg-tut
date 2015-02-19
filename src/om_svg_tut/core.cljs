@@ -7,14 +7,14 @@
             [om-svg-tut.board :as board]
             [clojure.browser.repl :as repl]))
 
-(repl/connect "http://localhost:9000/repl")
+;; (repl/connect "http://localhost:9000/repl")
 
 (enable-console-print!)
 
 (def game-state (atom
                  {:row 0
                   :col 0
-                  :value 0
+                  :object 8
                   :board board/sudoku-board}))
 
 ;; global constants
@@ -81,6 +81,16 @@
                           :width box-length
                           :height box-length}))))
 
+(defn current-square
+  "highlight given column"
+  [[row-num col-num]]
+  (let [x (* col-num square-length)
+        y (* row-num square-length)]
+    (dom/g #js {:className "current-square"}
+           (dom/rect #js {:x x :y y
+                          :width square-length
+                          :height square-length}))))
+
 (defn value-at-pos
   [pos value]
   (let [[r c] pos
@@ -90,12 +100,11 @@
         cy (+ 39 y-pos)
         x (+ x-pos 26)
         y (+ y-pos 52)
-        r 30]
+        r 28]
     (when (not (= 0 value))
       (dom/g #js{:className (str "object-" value)}
              (dom/circle #js{:cx cx :cy cy :r r})
-             (dom/text #js{:x x :y y}
-                       (str value))))))
+             (dom/text #js{:x x :y y} (str value))))))
 
 (defn row-of-values
   "given a row and a row number, return a sequence of svg representations."
@@ -130,29 +139,41 @@ one row at a time"
                  (current-row row)
                  (current-col col)
                  (current-box start-pos)
+                 (current-square [row col])
                  (square-lines)
                  (box-lines)
                  (board-values (:board app)))))))
 
 (defn object
   "render representation of given object o"
-  [o]
-  (let [class-name (str "object object-" o)]
-    (dom/svg #js {:className class-name}
-             (dom/circle #js{:cx 30 :cy 30 :r 30})
-             (dom/text #js{:x 20 :y 40}
-                       (str o)))))
+  ([o] (object o false))
+  ([o current?]
+   (let [class-name (str "object object-" o)]
+     (if current?
+       (dom/svg #js {:className (str class-name " current-object")}
+                (dom/rect #js {:x 0 :y 0
+                               :width square-length
+                               :height square-length})
+                (dom/circle #js {:cx 32 :cy 32 :r 28})
+                (dom/text #js {:x 20 :y 45} (str o)))
+       (dom/svg #js {:className class-name}
+                (dom/circle #js {:cx 32 :cy 32 :r 28})
+                (dom/text #js {:x 20 :y 45} (str o)))))))
 
 (defn objects
   "render a row of objects"
-  [app owner]
+  [current-object owner]
   (reify
     om/IRender
     (render [_]
       (dom/div #js {:className "objects"}
                (apply dom/div #js {:className "object-list"}
                       (map
-                       (fn [o] (object o))
+                       (fn [o]
+                         (let [current? (= o current-object)]
+                           (if current?
+                             (object o true)
+                             (object o))))
                        (range 1 10)))))))
 
 (defn update-pos
@@ -179,7 +200,6 @@ one row at a time"
         cur-val (board/value board [col row])]
     (om/update! app [:board col row] value)))
 
-
 (defn game
   "start a new sudoku game"
   [app owner]
@@ -197,7 +217,7 @@ one row at a time"
     om/IRender
     (render [_]
       (dom/div #js {:className "main"}
-               (om/build objects (:value app))
+               (om/build objects (:object app))
                (om/build board app)))))
 
 (om/root
