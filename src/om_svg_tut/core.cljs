@@ -163,6 +163,7 @@ one row at a time"
 (defn update-object
   [app key op]
   (om/transact! app key
+                (fn [val] (mod (op val) 10))))
 
 (defn current-object-view
   "view of current objact and navigation controls"
