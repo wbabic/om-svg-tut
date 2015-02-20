@@ -160,9 +160,35 @@ one row at a time"
                 (dom/circle #js {:cx 32 :cy 32 :r 28})
                 (dom/text #js {:x 20 :y 45} (str o)))))))
 
+(defn update-object
+  [app key op]
+  (om/transact! app key
+
+(defn current-object-view
+  "view of current objact and navigation controls"
+  [app owner]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div #js {:className "current-object-view"}
+               (dom/h3 nil "Current Object")
+               (dom/svg #js {:className (str "object object-" (:object app) " current-object")}
+                        (dom/rect #js {:x 0 :y 0
+                                       :width square-length
+                                       :height square-length})
+                        (dom/circle #js {:cx 32 :cy 32 :r 28})
+                        (dom/text #js {:x 20 :y 45} (str (:object app))))
+               (dom/div #js {:className "object-nav"}
+                        (dom/button #js {:className "object-nav-button"
+                                         :onClick #(update-object app :object dec)}
+                                    "prev")
+                        (dom/button #js {:className "object-nav-button"
+                                         :onClick #(update-object app :object inc)}
+                                    "next"))))))
+
 (defn objects
   "render a row of objects"
-  [current-object owner]
+  [app owner]
   (reify
     om/IRender
     (render [_]
@@ -170,11 +196,13 @@ one row at a time"
                (apply dom/div #js {:className "object-list"}
                       (map
                        (fn [o]
-                         (let [current? (= o current-object)]
+                         (let [current-object (:object app)
+                               current? (= o current-object)]
                            (if current?
                              (object o true)
                              (object o))))
-                       (range 1 10)))))))
+                       (range 1 10)))
+               (om/build current-object-view app)))))
 
 (defn update-pos
   [app key op]
@@ -217,7 +245,7 @@ one row at a time"
     om/IRender
     (render [_]
       (dom/div #js {:className "main"}
-               (om/build objects (:object app))
+               (om/build objects app)
                (om/build board app)))))
 
 (om/root

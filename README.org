@@ -1,0 +1,36 @@
+* om-svg-tut
+Sudoku using om react svg core.async core.match
+
+** Overview
+A simple sudoku gui for playing in a browser, in color, with animations.
+
+** Setup
+Compile clojurescript to javascript by,
+#+BEGIN_SRC shell
+lein cljsbuild auto dev
+#+END_SRC
+and then open index.html in a broswer.
+
+To use a browser repl,
+uncomment
+#+BEGIN_SRC clojure
+(repl/connect "http://localhost:9000/repl")
+#+END_SRC
+in core.cljs
+and then run
+#+BEGIN_SRC shell
+./scripts/erepl
+#+END_SRC
+and reload index.html.
+
+** Resources
+*** SVG
+    http://www.w3.org/TR/SVG/Overview.html
+    https://developer.mozilla.org/en-US/docs/Web/SVG
+
+**** Fonts in svg
+     http://nimbupani.com/about-fonts-in-svg.html
+** License
+Copyright © 2014 Walter Patrick Babic
+
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
