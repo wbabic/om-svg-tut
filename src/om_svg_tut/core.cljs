@@ -171,10 +171,10 @@ any square that is not occupied and is in a row, column or box
             col (:col app)
             start-pos (board/pos->start-pos [col row])]
         (dom/svg #js{:width 693 :height 693}
+                 (current-object-layer app)
                  ;;(current-row row)
                  ;;(current-col col)
                  ;;(current-box start-pos)
-                 (current-object-layer app)
                  (current-square [row col])
                  (square-lines)
                  (box-lines)
@@ -237,7 +237,8 @@ any square that is not occupied and is in a row, column or box
                                current? (= o current-object)]
                            (object o current?)))
                        (range 1 10)))
-               (om/build current-object-view app)))))
+               ;;(om/build current-object-view app)
+               ))))
 
 (defn update-pos
   [app key op]
@@ -272,10 +273,13 @@ any square that is not occupied and is in a row, column or box
       (let [key-chan (om/get-shared owner :keys-chan)]
         (go
           (loop []
-            (let [event (<! key-chan)]
+            (let [event (<! key-chan)
+                  _ (println event)]
               (match event
                      [:move   direction] (move-in-direction app direction)
-                     [:value  value]     (update-value app value))
+                     [:value  value]     (update-value app value)
+                     [:next-object]      (update-object app :object inc)
+                     [:prev-object]      (update-object app :object dec))
               (recur))))))
     om/IRender
     (render [_]
