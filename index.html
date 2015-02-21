@@ -7,7 +7,7 @@
              padding: 10px;
              border: 1px solid grey;
              border-radius: 5px;
-             background: #BBB;
+             background: rgba(82, 82, 82, 1);
          }
          svg.object {
              margin: 4;
@@ -17,7 +17,7 @@
          }
          .box-lines {
              stroke: hsla(0, 100%, 50%, .75);
-             stroke-width: 3;
+             stroke-width: 5;
          }
          .square-lines {
              stroke: hsla(240, 100%, 50%, .5);
@@ -40,7 +40,7 @@
          }
          .current-square rect {
              stroke: red;
-             fill: yellow;
+             fill: rgba(255, 225, 0, 0.53);
              stroke-width: 4;
          }
          .current-object rect {
@@ -114,6 +114,16 @@
              width: 40;
              height: 40;
              margin: 5;
+         }
+         rect.in-range {
+             stroke: blue;
+             fill: rgba(122, 122, 122, 1);
+             stroke-width: 1;
+         }
+         rect.not-in-range {
+             stroke: blue;
+             fill: rgba(196, 196, 196, 1);
+             stroke-width: 1;
          }
         </style>
     </head>

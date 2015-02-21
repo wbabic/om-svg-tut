@@ -142,3 +142,13 @@ there can not be any other object in the same
   "update board to value at position"
   [board position value]
   (assoc-in board position value))
+
+(defn positions-for-value
+  "return a sequence of all locations of given value
+in given board"
+  [board target]
+  (for [i (range 9)
+        j (range 9)
+        :let [value (get-in board [i j])]
+        :when (= value target)]
+    [i j]))

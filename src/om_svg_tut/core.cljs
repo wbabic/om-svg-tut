@@ -14,7 +14,7 @@
 (def game-state (atom
                  {:row 0
                   :col 0
-                  :object 8
+                  :object 0
                   :board board/sudoku-board}))
 
 ;; global constants
@@ -81,15 +81,26 @@
                           :width box-length
                           :height box-length}))))
 
+(defn square-at-coords
+  ([[row-num col-num]]
+   (let [x (* col-num square-length)
+         y (* row-num square-length)]
+     (dom/rect #js {:x x :y y
+                    :width square-length
+                    :height square-length})))
+  ([[row-num col-num] class-name]
+   (let [x (* col-num square-length)
+         y (* row-num square-length)]
+     (dom/rect #js {:x x :y y
+                    :width square-length
+                    :height square-length
+                    :className class-name}))))
+
 (defn current-square
-  "highlight given column"
-  [[row-num col-num]]
-  (let [x (* col-num square-length)
-        y (* row-num square-length)]
-    (dom/g #js {:className "current-square"}
-           (dom/rect #js {:x x :y y
-                          :width square-length
-                          :height square-length}))))
+  "highlight given square"
+  [pos]
+  (dom/g #js {:className "current-square"}
+         (square-at-coords pos)))
 
 (defn value-at-pos
   [pos value]
@@ -126,6 +137,30 @@ one row at a time"
               (row-of-values row-vals row-num)))
           (range 9))))
 
+(defn current-object-layer
+  "layer that highlights the range of the current object
+any square that is not occupied and is in a row, column or box
+  that contains the current object is highlighted"
+  [app]
+  (let [value (:object app)
+        board (:board app)
+        locations (board/positions-for-value board value)
+        rows-with-value (set (map first locations))
+        cols-with-value (set (map second locations))
+        box-nums-with-value (set (map board/pos->box-num locations))]
+    (apply dom/g #js {:className "current-object-layer"}
+           (for [i (range 9)
+                 j (range 9)
+                 :let [value (get-in board [i j])
+                       box-num (board/pos->box-num [i j])]
+                 :when (and (= value 0))]
+             (if (or
+                  (some #(= i %) rows-with-value)
+                  (some #(= j %) cols-with-value)
+                  (some #(= box-num %) box-nums-with-value))
+               (square-at-coords [j i] "in-range")
+               (square-at-coords [j i] "not-in-range"))))))
+
 (defn board
   "render svg board"
   [app owner]
@@ -136,9 +171,10 @@ one row at a time"
             col (:col app)
             start-pos (board/pos->start-pos [col row])]
         (dom/svg #js{:width 693 :height 693}
-                 (current-row row)
-                 (current-col col)
-                 (current-box start-pos)
+                 ;;(current-row row)
+                 ;;(current-col col)
+                 ;;(current-box start-pos)
+                 (current-object-layer app)
                  (current-square [row col])
                  (square-lines)
                  (box-lines)
@@ -199,9 +235,7 @@ one row at a time"
                        (fn [o]
                          (let [current-object (:object app)
                                current? (= o current-object)]
-                           (if current?
-                             (object o true)
-                             (object o))))
+                           (object o current?)))
                        (range 1 10)))
                (om/build current-object-view app)))))
 
