@@ -30,6 +30,27 @@ and reload index.html.
 
 **** Fonts in svg
      http://nimbupani.com/about-fonts-in-svg.html
+*** Sudoku
+    Backtracking
+    http://en.wikipedia.org/wiki/Backtracking
+
+    Sudoku solving algorithms
+    http://en.wikipedia.org/wiki/Sudoku_solving_algorithms
+
+    Sudoku as aConstraint Problem
+    http://4c.ucc.ie/~hsimonis/sudoku.pdf
+
+    Sudoku Explainer
+    http://diuf.unifr.ch/pai/people/juillera/Sudoku/Sudoku.html
+
+    Some interesting Sudokus
+    http://diuf.unifr.ch/pai/people/juillera/Sudoku/InterestingSudokus.html
+
+    A Pencil-and-Paper
+    Algorithm for Solving
+    Sudoku Puzzles
+    J.F.Crook
+    http://www.ams.org/notices/200904/rtx090400460p.pdf
 ** License
 Copyright © 2014 Walter Patrick Babic
 
