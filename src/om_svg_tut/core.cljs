@@ -15,7 +15,7 @@
                  {:row 0
                   :col 0
                   :object 0
-                  :board board/b-2}))
+                  :board board/b-4}))
 
 ;; global constants
 (def square-length 77)

@@ -8,7 +8,8 @@
                  [org.clojure/clojurescript "0.0-2850"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.clojure/core.match "0.3.0-alpha4"]
-                 [org.omcljs/om "0.8.8"]]
+                 [org.omcljs/om "0.8.8"]
+                 [org.clojure/core.logic "0.8.10"]]
 
   :plugins [[lein-cljsbuild "1.0.4"]]
 

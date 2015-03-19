@@ -51,6 +51,29 @@ and reload index.html.
     Sudoku Puzzles
     J.F.Crook
     http://www.ams.org/notices/200904/rtx090400460p.pdf
+
+    Solving Every Sudoku Puzzle
+    Peter Norvig
+    constraint propegation and search
+    http://norvig.com/sudoku.html
+
+    clojure version:
+    https://jkkramer.wordpress.com/2011/03/29/clojure-python-side-by-side/
+
+*** core.logic
+    https://github.com/clojure/core.logic
+
+    to solve sudoku
+    https://gist.github.com/swannodette/3217582
+
+    Constraint Logic Programming
+    http://en.wikipedia.org/wiki/Constraint_logic_programming
+
+    Edmund Jackson
+    core.logic.intro
+    Euro clojure 2012
+    https://vimeo.com/45128721
+
 ** License
 Copyright © 2014 Walter Patrick Babic
 
