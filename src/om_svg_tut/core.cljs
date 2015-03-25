@@ -5,9 +5,10 @@
             [cljs.core.match :refer-macros [match]]
             [om-svg-tut.events :as events]
             [om-svg-tut.board :as board]
+            [om-svg-tut.sudoku :as sudoku]
             [clojure.browser.repl :as repl]))
 
-;; (repl/connect "http://localhost:9000/repl")
+(repl/connect "http://localhost:9000/repl")
 
 (enable-console-print!)
 
@@ -15,7 +16,8 @@
                  {:row 0
                   :col 0
                   :object 0
-                  :board board/b-4}))
+                  :board board/b-5
+                  :values (sudoku/parse-grid sudoku/b3)}))
 
 ;; global constants
 (def square-length 77)
@@ -273,8 +275,7 @@ any square that is not occupied and is in a row, column or box
       (let [key-chan (om/get-shared owner :keys-chan)]
         (go
           (loop []
-            (let [event (<! key-chan)
-                  _ (println event)]
+            (let [event (<! key-chan)]
               (match event
                      [:move   direction] (move-in-direction app direction)
                      [:value  value]     (update-value app value)
@@ -292,3 +293,10 @@ any square that is not occupied and is in a row, column or box
   game-state
   {:target (. js/document (getElementById "app"))
    :shared {:keys-chan (events/keys-chan)}})
+
+(comment
+  (in-ns 'om-svg-tut.core)
+  (:values @game-state)
+  (sudoku/display (:values @game-state))
+
+  )

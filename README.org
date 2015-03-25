@@ -1,27 +1,30 @@
 * om-svg-tut
-Sudoku using om react svg core.async core.match
+  Sudoku using om react svg core.async core.match
 
 ** Overview
-A simple sudoku gui for playing in a browser, in color, with animations.
+   A simple sudoku gui for playing in a browser, in color, with animations.
+
+   The underlying goal is to illustrate strategies and algorithms
+   through the playing of a game
 
 ** Setup
-Compile clojurescript to javascript by,
-#+BEGIN_SRC shell
-lein cljsbuild auto dev
-#+END_SRC
-and then open index.html in a broswer.
+   Compile clojurescript to javascript by,
+   #+BEGIN_SRC shell
+     lein cljsbuild auto dev
+   #+END_SRC
+   and then open index.html in a broswer.
 
-To use a browser repl,
-uncomment
-#+BEGIN_SRC clojure
-(repl/connect "http://localhost:9000/repl")
-#+END_SRC
-in core.cljs
-and then run
-#+BEGIN_SRC shell
-./scripts/erepl
-#+END_SRC
-and reload index.html.
+   To use a browser repl,
+   uncomment
+   #+BEGIN_SRC clojure
+     (repl/connect "http://localhost:9000/repl")
+   #+END_SRC
+   in core.cljs
+   and then run
+   #+BEGIN_SRC shell
+     ./scripts/erepl
+   #+END_SRC
+   and reload index.html.
 
 ** Resources
 *** SVG
@@ -31,34 +34,49 @@ and reload index.html.
 **** Fonts in svg
      http://nimbupani.com/about-fonts-in-svg.html
 *** Sudoku
-    Backtracking
-    http://en.wikipedia.org/wiki/Backtracking
+**** Backtracking
+     http://en.wikipedia.org/wiki/Backtracking
 
-    Sudoku solving algorithms
-    http://en.wikipedia.org/wiki/Sudoku_solving_algorithms
+**** Sudoku solving algorithms
+     http://en.wikipedia.org/wiki/Sudoku_solving_algorithms
 
-    Sudoku as aConstraint Problem
-    http://4c.ucc.ie/~hsimonis/sudoku.pdf
+**** Sudoku as aConstraint Problem
+     http://4c.ucc.ie/~hsimonis/sudoku.pdf
 
-    Sudoku Explainer
-    http://diuf.unifr.ch/pai/people/juillera/Sudoku/Sudoku.html
+**** Sudoku Explainer
+     http://diuf.unifr.ch/pai/people/juillera/Sudoku/Sudoku.html
 
-    Some interesting Sudokus
-    http://diuf.unifr.ch/pai/people/juillera/Sudoku/InterestingSudokus.html
+**** Some interesting Sudokus
+     http://diuf.unifr.ch/pai/people/juillera/Sudoku/InterestingSudokus.html
 
-    A Pencil-and-Paper
-    Algorithm for Solving
-    Sudoku Puzzles
-    J.F.Crook
-    http://www.ams.org/notices/200904/rtx090400460p.pdf
+**** A Pencil-and-Paper
+     Algorithm for Solving
+     Sudoku Puzzles
+     J.F.Crook
+     http://www.ams.org/notices/200904/rtx090400460p.pdf
 
-    Solving Every Sudoku Puzzle
-    Peter Norvig
-    constraint propegation and search
-    http://norvig.com/sudoku.html
+***** Occupacy Theorem
+      display markup in each empty cell,
+      the possible numbers that can occupy the cell
 
-    clojure version:
-    https://jkkramer.wordpress.com/2011/03/29/clojure-python-side-by-side/
+      preemptive sets
+      a set of m cells that can only contain a set of m distinct numbers
+      in a row, column or box, called the range
+      {[3,4,5,9],[c (7,1),c (7,2),c (8,3),c (9,3)]}
+
+      Occupacy Theorem
+      remove preemptive set members from range of preemptive set
+
+      also called hidden pair, triple,, quadruple
+      fill in any singletons in preemptive set
+
+**** Solving Every Sudoku Puzzle
+     Peter Norvig
+     constraint propegation and search
+     http://norvig.com/sudoku.html
+
+     clojure version:
+     https://jkkramer.wordpress.com/2011/03/29/clojure-python-side-by-side/
 
 *** core.logic
     https://github.com/clojure/core.logic
@@ -74,7 +92,10 @@ and reload index.html.
     Euro clojure 2012
     https://vimeo.com/45128721
 
-** License
-Copyright © 2014 Walter Patrick Babic
+    slides
+    http://www.slideshare.net/normanrichards/corelogic-introduction
 
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+** License
+   Copyright © 2014 Walter Patrick Babic
+
+   Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
