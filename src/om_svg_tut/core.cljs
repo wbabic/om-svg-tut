@@ -150,14 +150,16 @@ one row at a time"
 (defn markup
   "draw markup of given board
   one square at a time"
-  [values]
-  (apply dom/g #js {:className "markup-values"}
-         (map
-          (fn [square]
-            (let [sq-values (values square)]
-              (when (> (count sq-values) 1)
-                (markup-square square sq-values))))
-          board/positions)))
+  [app]
+  (let [values (:values app)
+        board (:board app)]
+    (apply dom/g #js {:className "markup-values"}
+           (map
+            (fn [square]
+              (let [sq-values (values square)]
+                (when (= 0 (board/value board square))
+                  (markup-square square sq-values))))
+            board/positions))))
 
 (defn current-object-layer
   "layer that highlights the range of the current object
@@ -201,7 +203,7 @@ any square that is not occupied and is in a row, column or box
                  (square-lines)
                  (box-lines)
                  (board-values (:board app))
-                 (markup (:values app)))))))
+                 (markup app))))))
 
 (defn object
   "render representation of given object o"
