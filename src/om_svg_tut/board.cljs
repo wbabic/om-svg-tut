@@ -1,6 +1,8 @@
 (ns om-svg-tut.board
   (:require [clojure.set :as set]))
 
+(enable-console-print!)
+
 (def shortz-301
   [[0 0 0 1 0 0 0 0 0]
    [3 0 0 0 0 0 0 1 0]
@@ -77,7 +79,7 @@
 ;; a board is a vector of 9 rows
 ;; each row has value in complete-set
 
-;; an emptry row in a vector with nine zeros
+;; an empty row in a vector with nine zeros
 (def empty-row (vec (repeat 9 0)))
 
 ;; an empty board is a vector of
@@ -196,3 +198,83 @@ in given board"
         :let [value (get-in board [i j])]
         :when (= value target)]
     [i j]))
+
+
+(comment
+  ;; test from repl
+  (require '[om-svg-tut.board :as b] :reload)
+  b/b-5
+  (b/row b/b-5 0)
+  (b/col b/b-5 0)
+  (b/box b/b-5 0)
+  (b/row-values b/b-5 0)
+  (b/col-values b/b-5 0)
+  (b/box-values b/b-5 0)
+  ;; last two values of first row
+  (b/value b/b-5 [0 7])
+  (b/value b/b-5 [0 8])
+  )
+
+;; okay, now lets add some markup
+;; unit
+;; unit list
+;; unit map: position -> units
+;; peers: position -> list of peers of that position
+(def rows (range 9))
+(def cols (range 9))
+(def positions (for [r rows c cols] [r c]))
+(def unitlist (concat (for [c cols] (for [r rows] [r c]))
+                      (for [r rows] (for [c cols] [r c]))
+                      (for [rs (partition 3 rows) cs (partition 3 cols)]
+                        (for [r rs c cs] [r c]))))
+(def units (into {} (for [p positions]
+                      [p (for [u unitlist
+                               :when (some #{p} u)]
+                           u)])))
+(def peers (into {} (for [p positions]
+                      [p (-> (reduce into #{} (units p))
+                             (disj p))])))
+(def empty-markup
+  (into {}
+        (for [r position-set c position-set] [[r c] value-set])))
+
+(defn assign
+  "assign a value to a position and return a new markup
+make position have value and remove value from the peers of that position"
+  [markup position value]
+  (let [peers-p (peers position)]
+    (into {}
+          (map (fn [[k v]]
+                 (if (peers-p k)
+                   [k (disj v value)]
+                   [k v]))
+               (assoc markup position #{value})))))
+
+(defn eliminate
+  "remove value from markup position
+returning a new markup"
+  [markup position value]
+  (update-in markup [position] #(disj % value)))
+
+(defn markup-board
+  "return markup for given board"
+  [board]
+  (reduce
+   (fn [markup position]
+     (let [v  (value board position)]
+       (if (= 0 v)
+         markup
+         (assign markup position v))))
+   empty-markup
+   positions)
+  )
+
+(comment
+  (def m1 (b/assign b/empty-markup [0 0] 1))
+  (m1 [0 0])
+  (m1 [0 1])
+
+  (def b-5-markup (b/markup-board b/b-5))
+  (b-5-markup [0 0])
+  (b-5-markup [3 1])
+  )

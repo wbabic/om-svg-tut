@@ -3,6 +3,8 @@
             [goog.string :as gstring]
             [goog.string.format]))
 
+;; ideas from http://norvig.com/sudoku.html
+;; ported to clojurescript
 (enable-console-print!)
 ;; squares units peers
 
@@ -186,16 +188,6 @@
           (recur (rest bs) values))
         values))))
 
-(comment
- (loop [bs bs values values]
-   (if-let [b (first bs)]
-     (if (val b)
-       (when-let [new-values (assign values (key b) (val b))]
-         (recur (next bs) new-values))
-       (recur (rest bs) values))
-     values))
- )
-
 (defn search
   "Using depth-first search and propagation, try all possible values"
   [values]
@@ -206,18 +198,6 @@
         (let [s (apply min-key scount (filter #(< 1 (scount %)) squares))]
           (some identity (for [d (values s)]
                            (search (assign values s d)))))))))
-
-(comment
-
-  (loop [ds (values s)]
-    (when-let [d (first ds)]
-      (let [new-values (search (assign values s d))]
-        (if new-values
-          (do
-            (display new-values)
-            new-values)
-          (recur (rest ds))))))
-  )
 
 (defn solve [grid] (-> grid parse-grid search))
 

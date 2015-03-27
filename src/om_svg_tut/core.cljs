@@ -5,7 +5,7 @@
             [cljs.core.match :refer-macros [match]]
             [om-svg-tut.events :as events]
             [om-svg-tut.board :as board]
-            [om-svg-tut.sudoku :as sudoku]
+            [clojure.string :as string]
             [clojure.browser.repl :as repl]))
 
 (repl/connect "http://localhost:9000/repl")
@@ -17,7 +17,7 @@
                   :col 0
                   :object 0
                   :board board/b-5
-                  :values (sudoku/parse-grid sudoku/b3)}))
+                  :values (board/markup-board board/b-5)}))
 
 ;; global constants
 (def square-length 77)
@@ -119,6 +119,14 @@
              (dom/circle #js{:cx cx :cy cy :r r})
              (dom/text #js{:x x :y y} (str value))))))
 
+(defn markup-square
+  [square sq-values]
+  (let [[r c] square
+        x (+ 10 (* r square-length))
+        y (+ 60 (* c square-length))
+        v (string/join "" (sort sq-values))]
+    (dom/text #js{:x x :y y} v)))
+
 (defn row-of-values
   "given a row and a row number, return a sequence of svg representations."
   [row row-num]
@@ -138,6 +146,18 @@ one row at a time"
             (let [row-vals (board row-num)]
               (row-of-values row-vals row-num)))
           (range 9))))
+
+(defn markup
+  "draw markup of given board
+  one square at a time"
+  [values]
+  (apply dom/g #js {:className "markup-values"}
+         (map
+          (fn [square]
+            (let [sq-values (values square)]
+              (when (> (count sq-values) 1)
+                (markup-square square sq-values))))
+          board/positions)))
 
 (defn current-object-layer
   "layer that highlights the range of the current object
@@ -180,7 +200,8 @@ any square that is not occupied and is in a row, column or box
                  (current-square [row col])
                  (square-lines)
                  (box-lines)
-                 (board-values (:board app)))))))
+                 (board-values (:board app))
+                 (markup (:values app)))))))
 
 (defn object
   "render representation of given object o"
@@ -263,7 +284,10 @@ any square that is not occupied and is in a row, column or box
         row (:row app-values)
         col (:col app-values)
         board (:board app-values)
+        values (:values app-values)
+        new-values (board/assign values [col row] value)
         cur-val (board/value board [col row])]
+    (om/update! app [:values] new-values)
     (om/update! app [:board col row] value)))
 
 (defn game
@@ -294,9 +318,20 @@ any square that is not occupied and is in a row, column or box
   {:target (. js/document (getElementById "app"))
    :shared {:keys-chan (events/keys-chan)}})
 
+(defn reset-markup
+  []
+  (let [board (@game-state :board)
+        new-markup (board/markup-board board)]
+    (swap! game-state assoc :values new-markup)))
+
 (comment
+  (require '[om-svg-tut.core :as c])
+  ((@c/game-state :values) [0 0])
+  ;;=> #{4}
+
   (in-ns 'om-svg-tut.core)
   (:values @game-state)
-  (sudoku/display (:values @game-state))
 
+  ;; reset markup
+  (om-svg-tut.core/reset-markup)
   )
