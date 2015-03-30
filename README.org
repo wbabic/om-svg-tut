@@ -24,7 +24,7 @@
    #+BEGIN_SRC shell
      ./scripts/erepl
    #+END_SRC
-   and reload index.html.
+   then http://localhost:9000/
 
 ** Resources
 *** SVG
@@ -40,7 +40,7 @@
 **** Sudoku solving algorithms
      http://en.wikipedia.org/wiki/Sudoku_solving_algorithms
 
-**** Sudoku as aConstraint Problem
+**** Sudoku as a Constraint Problem
      http://4c.ucc.ie/~hsimonis/sudoku.pdf
 
 **** Sudoku Explainer
@@ -55,7 +55,7 @@
      J.F.Crook
      http://www.ams.org/notices/200904/rtx090400460p.pdf
 
-***** Occupacy Theorem
+***** Occupancy Theorem
       display markup in each empty cell,
       the possible numbers that can occupy the cell
 
@@ -94,6 +94,23 @@
 
     slides
     http://www.slideshare.net/normanrichards/corelogic-introduction
+
+*** browser events
+    google closure
+    http://docs.closure-library.googlecode.com/git/class_goog_events_BrowserEvent.html
+    https://developers.google.com/closure/library/docs/events_tutorial
+
+    Clojurescript and core.async
+    http://www.thesoftwaresimpleton.com/blog/2014/12/30/core-dot-async-dot-mouse-dot-down/
+
+    react events
+    https://github.com/paulwittmann/omingard/blob/master/src/omingard/core.cljs
+    https://facebook.github.io/react/docs/events.html
+
+    https://github.com/spellhouse/phalanges/blob/master/src/phalanges/core.cljs
+
+    om intermediate tutorial
+    https://github.com/spellhouse/phalanges/blob/master/src/phalanges/core.cljs
 
 ** License
    Copyright © 2014 Walter Patrick Babic

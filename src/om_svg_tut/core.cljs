@@ -16,8 +16,8 @@
                  {:row 0
                   :col 0
                   :object 0
-                  :board board/b-5
-                  :values (board/markup-board board/b-5)}))
+                  :board board/shortz-301
+                  :values (board/markup-board board/shortz-301)}))
 
 ;; global constants
 (def square-length 77)
@@ -292,6 +292,16 @@ any square that is not occupied and is in a row, column or box
     (om/update! app [:values] new-values)
     (om/update! app [:board col row] value)))
 
+(defn update-markup
+  "eliminate value from markup"
+  [app value]
+  (let [app-values (deref app)
+        row (:row app-values)
+        col (:col app-values)
+        values (:values app-values)
+        new-values (board/eliminate values [col row] value)]
+    (om/update! app [:values] new-values)))
+
 (defn game
   "start a new sudoku game"
   [app owner]
@@ -305,6 +315,7 @@ any square that is not occupied and is in a row, column or box
               (match event
                      [:move   direction] (move-in-direction app direction)
                      [:value  value]     (update-value app value)
+                     [:markup value]     (update-markup app value)
                      [:next-object]      (update-object app :object inc)
                      [:prev-object]      (update-object app :object dec))
               (recur))))))
