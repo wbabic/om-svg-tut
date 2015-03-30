@@ -16,8 +16,8 @@
                  {:row 0
                   :col 0
                   :object 0
-                  :board board/shortz-301
-                  :values (board/markup-board board/shortz-301)}))
+                  :board board/mepham-diabolical
+                  :values (board/markup-board board/mepham-diabolical)}))
 
 ;; global constants
 (def square-length 77)
