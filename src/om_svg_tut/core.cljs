@@ -12,12 +12,14 @@
 
 (enable-console-print!)
 
-(def game-state (atom
-                 {:row 0
-                  :col 0
-                  :object 0
-                  :board board/mepham-diabolical
-                  :values (board/markup-board board/mepham-diabolical)}))
+(def initial-state
+  {:row 0
+   :col 0
+   :object 0
+   :board board/mepham-diabolical
+   :values (board/markup-board board/mepham-diabolical)})
+
+(def game-state (atom initial-state))
 
 (def undo-state (atom [@game-state]))
 
@@ -31,14 +33,21 @@
 
 (defn save-state
   []
-  (let [current-state @game-state]
+  (let [current-state @game-state
+        _ (println "savaing state")]
     (swap! undo-state conj current-state)))
 
 (defn do-undo
-  [app]
+  []
+  (println "undoing ...")
   (when (> (count @undo-state) 1)
     (reset! game-state (last @undo-state))
     (swap! undo-state pop)))
+
+(defn reset-state
+  []
+  (reset! game-state initial-state)
+  (reset! undo-state [@game-state]))
 
 (comment
   (require '[om-svg-tut.core])
@@ -362,7 +371,9 @@ any square that is not occupied and is in a row, column or box
                      [:value  value]     (update-value app value)
                      [:markup value]     (update-markup app value)
                      [:next-object]      (update-object app :object inc)
-                     [:prev-object]      (update-object app :object dec))
+                     [:prev-object]      (update-object app :object dec)
+                     [:speculate]        (save-state)
+                     [:unspeculate]      (do-undo))
               (recur))))))
     om/IRender
     (render [_]

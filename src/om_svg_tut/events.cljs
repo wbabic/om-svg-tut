@@ -36,18 +36,20 @@
      c))
 
 (def nav-codes
-  #{37 38 39 40 78 80})
+  #{37 38 39 40 78 80 83 85})
 
 (def key-codes
-  #{37 38 39 40 48 49 50 51 52 53 54 55 56 57 78 80})
+  #{37 38 39 40 48 49 50 51 52 53 54 55 56 57 78 80 83 85})
 
 (def nav-key-code-map
-  {78 [:next-object]
-   80 [:prev-object]
-   37 [:move :left]
+  {37 [:move :left]
    38 [:move :up]
    39 [:move :right]
-   40 [:move :down]})
+   40 [:move :down]
+   78 [:next-object]
+   80 [:prev-object]
+   83 [:speculate]
+   85 [:unspeculate]})
 
 (def value-key-code-map
   {48 [:value 0]
