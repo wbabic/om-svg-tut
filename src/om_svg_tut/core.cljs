@@ -19,6 +19,35 @@
                   :board board/mepham-diabolical
                   :values (board/markup-board board/mepham-diabolical)}))
 
+(def undo-state (atom [@game-state]))
+
+(comment
+  (add-watch game-state :history
+             (fn [_ _ _ n]
+               (let [history @undo-state]
+                 (when-not (= (last history) n)
+                   (swap! undo-state conj n)))))
+  )
+
+(defn save-state
+  []
+  (let [current-state @game-state]
+    (swap! undo-state conj current-state)))
+
+(defn do-undo
+  [app]
+  (when (> (count @undo-state) 1)
+    (reset! game-state (last @undo-state))
+    (swap! undo-state pop)))
+
+(comment
+  (require '[om-svg-tut.core])
+  (om-svg-tut.core/save-state)
+  (count @om-svg-tut.core/undo-state)
+  (om-svg-tut.core/do-undo)
+  (count (:history @om-svg-tut.core/undo-state))
+  (count @om-svg-tut.core/undo-state)
+  )
 ;; global constants
 (def square-length 77)
 (def number-of-squares 9)
@@ -161,14 +190,30 @@ one row at a time"
                   (markup-square square sq-values))))
             board/positions))))
 
+(defn current-object-layer-new
+  "layer that highlights the range of the current object
+any square that is not occupied and is in a row, column or box
+  that contains the current object is highlighted"
+  [app]
+  (let [object (:object app)
+        board (:board app)
+        markup (:values app)]
+    (apply dom/g #js {:className "current-object-layer"}
+           (for [pos board/positions
+                 :let [value (get-in board pos)]
+                 :when (and (= value 0) (not= 0 object))]
+             (if ((markup pos) object)
+               (square-at-coords pos "in-range")
+               (square-at-coords pos "not-in-range"))))))
+
 (defn current-object-layer
   "layer that highlights the range of the current object
 any square that is not occupied and is in a row, column or box
   that contains the current object is highlighted"
   [app]
-  (let [value (:object app)
+  (let [object (:object app)
         board (:board app)
-        locations (board/positions-for-value board value)
+        locations (board/positions-for-value board object)
         rows-with-value (set (map first locations))
         cols-with-value (set (map second locations))
         box-nums-with-value (set (map board/pos->box-num locations))]

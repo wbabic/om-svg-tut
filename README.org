@@ -107,9 +107,7 @@
     https://github.com/paulwittmann/omingard/blob/master/src/omingard/core.cljs
     https://facebook.github.io/react/docs/events.html
 
-    https://github.com/spellhouse/phalanges/blob/master/src/phalanges/core.cljs
-
-    om intermediate tutorial
+    keyboeard event properties
     https://github.com/spellhouse/phalanges/blob/master/src/phalanges/core.cljs
 
 ** License

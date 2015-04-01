@@ -210,7 +210,6 @@ in given board"
         :when (= value target)]
     [i j]))
 
-
 (comment
   ;; test from repl
   (require '[om-svg-tut.board :as b] :reload)
